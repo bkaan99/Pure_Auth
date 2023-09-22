@@ -4,6 +4,8 @@ import pyotp
 import qrcode
 
 secret_key = "GlobalSecretKey"
+user_name = "None"
+issuer_name = "None"
 
 def generate_qr_code(user_name, issuer_name):
     uri = pyotp.totp.TOTP(secret_key).provisioning_uri(name=user_name, issuer_name=issuer_name)
@@ -58,15 +60,15 @@ while True:
         if qr_code_choice == "yes":
             change_qr_settings()
         elif qr_code_choice == "no":
-            print("\n"+"QR'a ait user_name: deneme" + "\n" + "QR'a ait issuer_name: Deneme Kaan" + "\n" + "isimlendirmeleri ile oluşturuldu." + "\n")
-            generate_qr_code("deneme", "Deneme Kaan")
+            print("\n"+"QR'a ait user_name:" + f" {user_name}" + "\n" + "QR'a ait issuer_name:" + f" {issuer_name}" + "\n" + "isimlendirmeleri ile oluşturuldu." + "\n")
+            generate_qr_code(user_name, issuer_name)
         else:
             print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
 
         secret_key_choice = input("Gizli anahtarınızı değiştirmek ister misiniz? (yes/no): ").lower()
         if secret_key_choice == "yes":
             change_secret_key()
-        else:
+        elif secret_key_choice == "no":
             print("Gizli anahtarınız değiştirilmedi." + "\n" + "Gizli anahtarınız: " + f"({secret_key})" + "\n")
 
         write_secret_key()
