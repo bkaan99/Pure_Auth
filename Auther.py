@@ -13,17 +13,21 @@ issuer_name = "None"
 # logging.basicConfig(filename='Auther.log', level=logging.INFO ,format='%(asctime)s %(levelname)s %(message)s')
 
 def generate_qr_code(user_name, issuer_name):
-    uri = pyotp.totp.TOTP(secret_key).provisioning_uri(name=user_name, issuer_name=issuer_name)
-    img = qrcode.make(uri)
-    global user_selected_file_name
-    user_selected_file_name = input("Dosya adını girin: ")
-    file_name = f"{user_selected_file_name}.png"
-    img.save(file_name)
-    print(
-        "QR kod oluşturuldu ve " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.png)" + Fore.RESET + " adında kaydedilecek." + "\n")
+    try:
+        uri = pyotp.totp.TOTP(secret_key).provisioning_uri(name=user_name, issuer_name=issuer_name)
+        img = qrcode.make(uri)
+        global user_selected_file_name
+        user_selected_file_name = input("Dosya adını girin: ")
+        file_name = f"{user_selected_file_name}.png"
+        img.save(file_name)
+        print(
+            "QR kod oluşturuldu ve " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.png)" + Fore.RESET + " adında kaydedilecek." + "\n")
+        # logging.info(f"QR kod oluşturuldu ve {user_selected_file_name}.png adında kaydedildi.")
 
+    except:
+        print("QR kod oluşturulurken bir hata oluştu.")
+        # logging.error("QR kod oluşturulurken bir hata oluştu.")
 
-# logging.info(f"QR kod oluşturuldu ve {user_selected_file_name}.png adında kaydedildi.")
 
 def verify_code(verification_code):
     otp = pyotp.TOTP(secret_key)
