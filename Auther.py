@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import time
 import pyotp
 import qrcode
@@ -82,7 +83,7 @@ def authenticate_user(valid_username, valid_password):
 
 def close_program():
     print("Program sonlandırılıyor.")
-    exit()
+    sys.exit()
 
 is_running = True
 while is_running:
