@@ -8,7 +8,7 @@ from colorama import Fore, Back, Style
 secret_key = "GlobalSecretKey"
 user_name = "None"
 issuer_name = "None"
-
+is_authenticated = False
 
 # logging.basicConfig(filename='Auther.log', level=logging.INFO ,format='%(asctime)s %(levelname)s %(message)s')
 
@@ -45,11 +45,14 @@ def change_secret_key():
 
 
 def change_qr_settings():
-    global user_name
-    global issuer_name
-    user_name = input("Kullanıcı adınızı girin: ")
-    issuer_name = input("Oluşturucu adını girin: ")
-    generate_qr_code(user_name, issuer_name)
+    try :
+        global user_name
+        global issuer_name
+        user_name = input("Kullanıcı adınızı girin: ")
+        issuer_name = input("Oluşturucu adını girin: ")
+        generate_qr_code(user_name, issuer_name)
+    except:
+        print("QR kod oluşturulurken bir hata oluştu.")
 
 
 def write_secret_key():
@@ -63,6 +66,22 @@ def write_secret_key():
         json.dump(data, outfile, ensure_ascii=False, indent=4)
 
     print("Gizli anahtarınız " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.json)" + Fore.RESET + " adında kaydedilecektir." + "\n")
+
+def authenticate_user(valid_username, valid_password):
+    print("Lütfen kimlik doğrulama bilgilerinizi girin:")
+    username = input("Kullanıcı adı: ")
+    password = input("Şifre: ")
+
+    if username == valid_username and password == valid_password:
+        print("Kullanıcı doğrulandı.")
+        return True
+    else:
+        print("Kullanıcı adı veya şifre yanlış. Program sonlandırılıyor.")
+        return False
+
+def close_program():
+    print("Program sonlandırılıyor.")
+    exit()
 
 is_running = True
 while is_running:
@@ -78,36 +97,40 @@ while is_running:
     if user_choice == "1":
 
         qr_code_choice = ""
-        while qr_code_choice not in ["yes", "no"]:
+        while qr_code_choice not in ["yes", "no" , "exit"]:
             qr_code_choice = input(
                 "\n" + Fore.LIGHTBLUE_EX + "QR Kodunu özelleştirmek ister misiniz ? (yes/no) " + Fore.RESET).lower()
-            if qr_code_choice not in ["yes", "no"]:
+            if qr_code_choice not in ["yes", "no", "exit"]:
                 print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
 
         if qr_code_choice == "yes":
             change_qr_settings()
-        else:
+        elif qr_code_choice == "no":
             print(
                 "\n" + "QR'a ait user_name:" + Fore.MAGENTA + f" {user_name}" + Fore.RESET + "\n" + "QR'a ait issuer_name:" + Fore.MAGENTA + f" {issuer_name}" + Fore.RESET + "\n" + "isimlendirmeleri ile oluşturuldu." + "\n")
             generate_qr_code(user_name, issuer_name)
+        elif qr_code_choice == "exit":
+            close_program()
 
         secret_key_choice = ""
-        while secret_key_choice not in ["yes", "no"]:
+        while secret_key_choice not in ["yes", "no" , "exit"]:
             secret_key_choice = input(Fore.LIGHTBLUE_EX +"Gizli anahtarınızı değiştirmek ister misiniz? (yes/no):  " + Fore.RESET).lower()
-            if secret_key_choice not in ["yes", "no"]:
+            if secret_key_choice not in ["yes", "no" , "exit"]:
                 print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
 
         if secret_key_choice == "yes":
             change_secret_key()
         elif secret_key_choice == "no":
             print("\n" + "Gizli anahtarınız değiştirilmedi." + "\n" + "Gizli anahtarınız: " + f"({secret_key})" + "\n")
+        elif secret_key_choice == "exit":
+            close_program()
 
         write_secret_key()
 
         verify_choice = ""
-        while verify_choice not in ["yes", "no"]:
+        while verify_choice not in ["yes", "no" , "exit"]:
             verify_choice = input(Fore.LIGHTBLUE_EX + "Doğrulama yapmak ister misiniz? (yes/no): " + Fore.RESET).lower()
-            if verify_choice not in ["yes", "no"]:
+            if verify_choice not in ["yes", "no" , "exit"]:
                 print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
 
         if verify_choice == "yes":
@@ -115,15 +138,21 @@ while is_running:
             verify_code(verification_code)
         elif verify_choice == "no":
             print("Program sonlandırıldı.")
-        break
+        elif verify_choice == "exit":
+            close_program()
 
     elif user_choice == "2":
-        verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
-        verify_code(verification_code)
-        break
+        while not is_authenticated:
+            is_authenticated = authenticate_user("admin", "admin")
+            if is_authenticated:
+                verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
+                verify_code(verification_code)
+                break
+            else :
+                break
 
     elif user_choice == "exit":
-        break
+        close_program()
 
     else:
         print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
