@@ -60,11 +60,14 @@ def write_secret_key():
 
     print("Gizli anahtarınız " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.json)" + Fore.RESET + " adında kaydedilecektir." + "\n")
 
-while True:
+is_running = True
+while is_running:
     print(
         Fore.LIGHTBLUE_EX + "\n" + "Aşağıdaki seçeneklerden birini seçin: (Sayıları seçerek ilerleyebilirisinz)" + "\n" + "\n" + Fore.RESET +
         Fore.YELLOW + "1. QR kod oluşturmak" + "\n"
-        + "2. Doğrulama yapmak" + "\n" + Fore.RESET + Fore.LIGHTBLUE_EX)
+        + "2. Doğrulama yapmak" + "\n"
+        + Fore.LIGHTRED_EX + "exit. Çıkış yapmak" + "\n"
+        + Fore.RESET + Fore.LIGHTBLUE_EX)
 
     user_choice = input("Yapmak istediğiniz işlemi seçiniz : " + Fore.RESET).lower()
 
@@ -113,6 +116,9 @@ while True:
     elif user_choice == "2":
         verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
         verify_code(verification_code)
+        break
+
+    elif user_choice == "exit":
         break
 
     else:
