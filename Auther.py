@@ -1,4 +1,5 @@
 import json
+import os
 import time
 import pyotp
 import qrcode
@@ -33,7 +34,7 @@ def verify_code(verification_code):
     otp = pyotp.TOTP(secret_key)
     is_code_valid = otp.verify(verification_code)
     if is_code_valid:
-        print("Doğrulama Kodu Geçerli")
+        print( "\n" + "Doğrulama Kodu Geçerli")
     else:
         print("Doğrulama Kodu Geçersiz")
 
@@ -138,6 +139,7 @@ while is_running:
             verify_code(verification_code)
         elif verify_choice == "no":
             print("Program sonlandırıldı.")
+            close_program()
         elif verify_choice == "exit":
             close_program()
 
@@ -147,7 +149,6 @@ while is_running:
             if is_authenticated:
                 verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
                 verify_code(verification_code)
-                break
             else :
                 break
 
