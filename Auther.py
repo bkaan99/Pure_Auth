@@ -11,7 +11,7 @@ issuer_name = "None"
 is_authenticated = False
 
 
-def generate_qr_code(user_name, issuer_name):
+def generate_qr_code(user_name, issuer_name, secret_key):
     try:
         uri = pyotp.totp.TOTP(secret_key).provisioning_uri(name=user_name, issuer_name=issuer_name)
         img = qrcode.make(uri)
@@ -36,9 +36,9 @@ def verify_code(verification_code):
 
 
 def change_secret_key():
-    global secret_key
-    secret_key = input("Yeni gizli anahtarı girin: ")
-    print(secret_key)
+    global new_secret_key
+    new_secret_key = input("Yeni gizli anahtarı girin: ")
+    print(new_secret_key)
 
 
 def change_qr_settings():
@@ -47,14 +47,15 @@ def change_qr_settings():
         global issuer_name
         user_name = input("Kullanıcı adınızı girin: ")
         issuer_name = input("Oluşturucu adını girin: ")
-        generate_qr_code(user_name, issuer_name)
+        change_secret_key()
+        generate_qr_code(user_name, issuer_name, secret_key=new_secret_key)
     except:
         print("QR kod oluşturulurken bir hata oluştu.")
 
 
 def write_secret_key():
     data = {}
-    data['secret_key'] = secret_key
+    data['secret_key'] = new_secret_key
     data[('user_name')] = user_name
     data[('issuer_name')] = issuer_name
     data[('time')] = time.asctime(time.localtime(time.time()))
@@ -109,18 +110,18 @@ while is_running:
         elif qr_code_choice == "exit":
             close_program()
 
-        secret_key_choice = ""
-        while secret_key_choice not in ["yes", "no" , "exit"]:
-            secret_key_choice = input(Fore.LIGHTBLUE_EX +"Gizli anahtarınızı değiştirmek ister misiniz? (yes/no):  " + Fore.RESET).lower()
-            if secret_key_choice not in ["yes", "no" , "exit"]:
-                print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
-
-        if secret_key_choice == "yes":
-            change_secret_key()
-        elif secret_key_choice == "no":
-            print("\n" + "Gizli anahtarınız değiştirilmedi." + "\n" + "Gizli anahtarınız: " + f"({secret_key})" + "\n")
-        elif secret_key_choice == "exit":
-            close_program()
+        # secret_key_choice = ""
+        # while secret_key_choice not in ["yes", "no" , "exit"]:
+        #     secret_key_choice = input(Fore.LIGHTBLUE_EX +"Gizli anahtarınızı değiştirmek ister misiniz? (yes/no):  " + Fore.RESET).lower()
+        #     if secret_key_choice not in ["yes", "no" , "exit"]:
+        #         print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
+        #
+        # if secret_key_choice == "yes":
+        #     change_secret_key()
+        # elif secret_key_choice == "no":
+        #     print("\n" + "Gizli anahtarınız değiştirilmedi." + "\n" + "Gizli anahtarınız: " + f"({secret_key})" + "\n")
+        # elif secret_key_choice == "exit":
+        #     close_program()
 
         write_secret_key()
 
