@@ -1,10 +1,8 @@
 import json
-import os
 import sys
 import time
 import pyotp
 import qrcode
-import logging
 from colorama import Fore, Back, Style
 
 secret_key = "GlobalSecretKey"
@@ -12,7 +10,6 @@ user_name = "None"
 issuer_name = "None"
 is_authenticated = False
 
-# logging.basicConfig(filename='Auther.log', level=logging.INFO ,format='%(asctime)s %(levelname)s %(message)s')
 
 def generate_qr_code(user_name, issuer_name):
     try:
@@ -24,11 +21,9 @@ def generate_qr_code(user_name, issuer_name):
         img.save(file_name)
         print(
             "QR kod oluşturuldu ve " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.png)" + Fore.RESET + " adında kaydedilecek." + "\n")
-        # logging.info(f"QR kod oluşturuldu ve {user_selected_file_name}.png adında kaydedildi.")
 
     except:
         print("QR kod oluşturulurken bir hata oluştu.")
-        # logging.error("QR kod oluşturulurken bir hata oluştu.")
 
 
 def verify_code(verification_code):
