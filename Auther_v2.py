@@ -7,8 +7,6 @@ from colorama import Fore
 from unidecode import unidecode
 
 
-basic_secret_key = "DenemeSecretKey"
-is_authenticated = False
 
 def generate_qr_code(user_name, issuer_name, selected_secret_key):
     try:
@@ -108,10 +106,11 @@ while is_running:
         elif qr_code_choice == "no":
             defult_user_name = "DenemeUserName"
             defult_issuer_name = "DenemeIssuerName"
+            default_secret_key = "DenemeSecretKey"
             print(
                 "\n" + "QR'a ait user_name:" + Fore.MAGENTA + f" {defult_user_name}" + Fore.RESET + "\n" + "QR'a ait issuer_name:" + Fore.MAGENTA + f" {defult_issuer_name}" + Fore.RESET + "\n" + "isimlendirmeleri ile oluşturuldu." + "\n")
-            generate_qr_code("DenemeUserName", "DenemeIssuerName" , basic_secret_key)
-            selected_secret_key = basic_secret_key
+            generate_qr_code("DenemeUserName", "DenemeIssuerName" , default_secret_key)
+            selected_secret_key = default_secret_key
             user_name = defult_user_name
             issuer_name = defult_issuer_name
             write_secret_key()
@@ -135,6 +134,7 @@ while is_running:
             close_program()
 
     elif user_choice == "2":
+        is_authenticated = False
         while not is_authenticated:
             is_authenticated = authenticate_user("admin", "admin")
             if is_authenticated:
