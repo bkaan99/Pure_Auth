@@ -143,20 +143,6 @@ while is_running:
         elif qr_code_choice == "exit":
             close_program()
 
-        # verify_choice = ""
-        # while verify_choice not in ["yes", "no" , "exit"]:
-        #     verify_choice = input(Fore.LIGHTBLUE_EX + "Doğrulama yapmak ister misiniz? (yes/no): " + Fore.RESET).lower()
-        #     if verify_choice not in ["yes", "no" , "exit"]:
-        #         print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
-        #
-        # if verify_choice == "yes":
-        #     verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
-        #     verify_code(verification_code)
-        # elif verify_choice == "no":
-        #     print("Program sonlandırıldı.")
-        #     close_program()
-        # elif verify_choice == "exit":
-        #     close_program()
 
     elif user_choice == "2":
         is_authenticated = False
