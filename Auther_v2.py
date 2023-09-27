@@ -26,12 +26,12 @@ def generate_qr_code(user_name, issuer_name, selected_secret_key):
 
 def verify_code(verification_code,readed_secret_key):
     otp = pyotp.TOTP(readed_secret_key)
-    is_code_valid = otp.verify(verification_code)
-    if is_code_valid:
-        print( "\n" + "Doğrulama Kodu Geçerli")
+    if otp.verify(verification_code):
+        print(Fore.LIGHTGREEN_EX + "Doğrulama başarılı." + Fore.RESET)
+        close_program()
     else:
-        print("Doğrulama Kodu Geçersiz")
-
+        print(Fore.LIGHTRED_EX + "Doğrulama başarısız." + Fore.RESET)
+        close_program()
 
 def change_secret_key():
     global selected_secret_key
@@ -71,11 +71,13 @@ def authenticate_user(valid_username, valid_password):
 
     if username == valid_username and password == valid_password:
         print("\n"+ Fore.LIGHTGREEN_EX  +"Kullanıcı doğrulandı." + Fore.RESET)
-        return True
-    else:
-        print("Kullanıcı adı veya şifre yanlış. Program sonlandırılıyor.")
-        return False
+        read_secret_key_from_json()
+        verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
+        verify_code(verification_code,readed_secret_key)
 
+    else:
+        print("Kullanıcı adı veya şifre yanlış")
+        close_program()
 def close_program():
     print("Program sonlandırılıyor.")
     sys.exit()
