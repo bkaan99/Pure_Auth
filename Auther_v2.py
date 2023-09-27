@@ -8,10 +8,7 @@ from unidecode import unidecode
 
 
 basic_secret_key = "DenemeSecretKey"
-user_name = "DenemeUserName"
-issuer_name = "DenemeIssuerName"
 is_authenticated = False
-
 
 def generate_qr_code(user_name, issuer_name, selected_secret_key):
     try:
@@ -109,10 +106,14 @@ while is_running:
             write_secret_key()
 
         elif qr_code_choice == "no":
+            defult_user_name = "DenemeUserName"
+            defult_issuer_name = "DenemeIssuerName"
             print(
-                "\n" + "QR'a ait user_name:" + Fore.MAGENTA + f" {user_name}" + Fore.RESET + "\n" + "QR'a ait issuer_name:" + Fore.MAGENTA + f" {issuer_name}" + Fore.RESET + "\n" + "isimlendirmeleri ile oluşturuldu." + "\n")
-            generate_qr_code(user_name, issuer_name , basic_secret_key)
+                "\n" + "QR'a ait user_name:" + Fore.MAGENTA + f" {defult_user_name}" + Fore.RESET + "\n" + "QR'a ait issuer_name:" + Fore.MAGENTA + f" {defult_issuer_name}" + Fore.RESET + "\n" + "isimlendirmeleri ile oluşturuldu." + "\n")
+            generate_qr_code("DenemeUserName", "DenemeIssuerName" , basic_secret_key)
             selected_secret_key = basic_secret_key
+            user_name = defult_user_name
+            issuer_name = defult_issuer_name
             write_secret_key()
 
         elif qr_code_choice == "exit":
