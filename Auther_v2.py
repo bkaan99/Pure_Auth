@@ -8,7 +8,8 @@ from colorama import Fore
 from unidecode import unidecode
 
 
-
+max_invalid_attempts = 3  # Maksimum hatalı giriş sayısı
+invalid_attempt_count = 0
 def generate_qr_code(user_name, issuer_name, selected_secret_key):
     try:
         uri = pyotp.totp.TOTP(selected_secret_key).provisioning_uri(name=user_name, issuer_name=issuer_name)
@@ -159,4 +160,9 @@ while is_running:
         close_program()
 
     else:
-        print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
+        invalid_attempt_count += 1  # Hatalı giriş sayacını artır
+        print(Fore.LIGHTRED_EX + "\n" + "Geçersiz seçenek. Lütfen geçerli bir seçenek girin.")
+
+        if invalid_attempt_count >= max_invalid_attempts:
+            print(f"{max_invalid_attempts} kez hatalı seçim yaptınız." + Fore.RESET)
+            close_program()
