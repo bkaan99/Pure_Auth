@@ -4,6 +4,8 @@ import time
 import pyotp
 import qrcode
 from colorama import Fore
+from unidecode import unidecode
+
 
 basic_secret_key = "DenemeSecretKey"
 user_name = "DenemeUserName"
@@ -37,7 +39,7 @@ def verify_code(verification_code):
 
 def change_secret_key():
     global selected_secret_key
-    selected_secret_key = input("Yeni gizli anahtarı girin: ")
+    selected_secret_key = unidecode(input("Yeni gizli anahtarı girin: "))
     print(selected_secret_key)
     return selected_secret_key
 
@@ -46,8 +48,8 @@ def change_qr_settings():
     try :
         global user_name
         global issuer_name
-        user_name = input("Kullanıcı adınızı girin: ")
-        issuer_name = input("Oluşturucu adını girin: ")
+        user_name = unidecode(input("Kullanıcı adınızı girin: "))
+        issuer_name = unidecode(input("Oluşturucu adını girin: "))
         change_secret_key()
         generate_qr_code(user_name, issuer_name, selected_secret_key)
     except:
