@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import time
 import pyotp
@@ -23,8 +24,8 @@ def generate_qr_code(user_name, issuer_name, selected_secret_key):
         print("QR kod oluşturulurken bir hata oluştu.")
 
 
-def verify_code(verification_code):
-    otp = pyotp.TOTP(selected_secret_key)
+def verify_code(verification_code,readed_secret_key):
+    otp = pyotp.TOTP(readed_secret_key)
     is_code_valid = otp.verify(verification_code)
     if is_code_valid:
         print( "\n" + "Doğrulama Kodu Geçerli")
@@ -64,12 +65,12 @@ def write_secret_key():
     print("Gizli anahtarınız " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.json)" + Fore.RESET + " adında kaydedilecektir." + "\n")
 
 def authenticate_user(valid_username, valid_password):
-    print("Lütfen kimlik doğrulama bilgilerinizi girin:")
+    print("\n"+ "\n"+ "\n"+ Fore.LIGHTMAGENTA_EX + "Lütfen kimlik doğrulama bilgilerinizi girin:" + Fore.RESET)
     username = input("Kullanıcı adı: ")
     password = input("Şifre: ")
 
     if username == valid_username and password == valid_password:
-        print("Kullanıcı doğrulandı.")
+        print("\n"+ Fore.LIGHTGREEN_EX  +"Kullanıcı doğrulandı." + Fore.RESET)
         return True
     else:
         print("Kullanıcı adı veya şifre yanlış. Program sonlandırılıyor.")
@@ -78,6 +79,28 @@ def authenticate_user(valid_username, valid_password):
 def close_program():
     print("Program sonlandırılıyor.")
     sys.exit()
+
+def read_secret_key_from_json():
+
+    user_selected_json_file = input(Fore.LIGHTBLUE_EX + "Okunacak json dosyasının adını girin: " + Fore.RESET)
+    if os.path.isfile(f'{user_selected_json_file}.json'):
+        print("\n" + Fore.LIGHTGREEN_EX +  f"{user_selected_json_file}.json " + Fore.RESET + "isimli dosya bulundu.")
+        with open(f'{user_selected_json_file}.json', 'r', encoding='utf8') as json_file:
+            data = json.load(json_file)
+            global readed_secret_key
+            readed_secret_key = data['secret_key']
+            readed_user_name = data['user_name']
+            readed_issuer_name = data['issuer_name']
+            readed_time = data['time']
+            print("\n" + "Gizli anahtarınız: " + Fore.LIGHTYELLOW_EX + f"{readed_secret_key}" + Fore.RESET)
+            print("Kullanıcı adınız: " + Fore.LIGHTYELLOW_EX + f"{readed_user_name}" + Fore.RESET)
+            print("Oluşturucu adınız: " + Fore.LIGHTYELLOW_EX + f"{readed_issuer_name}" + Fore.RESET)
+            print("Oluşturulma zamanı: " + Fore.LIGHTYELLOW_EX + f"{readed_time}" + Fore.RESET + "\n")
+            print("Gizli anahtarınız " + Fore.LIGHTYELLOW_EX + f"({user_selected_json_file}.json)" + Fore.RESET + " adlı dosyadan okundu." + "\n")
+
+    else:
+        print(Fore.LIGHTRED_EX + "\n" + "\n" +"Dosya bulunamadı." + Fore.RESET)
+        close_program()
 
 is_running = True
 while is_running:
@@ -118,26 +141,27 @@ while is_running:
         elif qr_code_choice == "exit":
             close_program()
 
-        verify_choice = ""
-        while verify_choice not in ["yes", "no" , "exit"]:
-            verify_choice = input(Fore.LIGHTBLUE_EX + "Doğrulama yapmak ister misiniz? (yes/no): " + Fore.RESET).lower()
-            if verify_choice not in ["yes", "no" , "exit"]:
-                print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
-
-        if verify_choice == "yes":
-            verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
-            verify_code(verification_code)
-        elif verify_choice == "no":
-            print("Program sonlandırıldı.")
-            close_program()
-        elif verify_choice == "exit":
-            close_program()
+        # verify_choice = ""
+        # while verify_choice not in ["yes", "no" , "exit"]:
+        #     verify_choice = input(Fore.LIGHTBLUE_EX + "Doğrulama yapmak ister misiniz? (yes/no): " + Fore.RESET).lower()
+        #     if verify_choice not in ["yes", "no" , "exit"]:
+        #         print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
+        #
+        # if verify_choice == "yes":
+        #     verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
+        #     verify_code(verification_code)
+        # elif verify_choice == "no":
+        #     print("Program sonlandırıldı.")
+        #     close_program()
+        # elif verify_choice == "exit":
+        #     close_program()
 
     elif user_choice == "2":
         is_authenticated = False
         while not is_authenticated:
             is_authenticated = authenticate_user("admin", "admin")
             if is_authenticated:
+                read_secret_key_from_json()
                 verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
                 verify_code(verification_code)
             else :
