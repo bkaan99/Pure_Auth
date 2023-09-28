@@ -54,11 +54,7 @@ def change_qr_settings():
 
 
 def write_secret_key():
-    data = {}
-    data['secret_key'] = selected_secret_key
-    data[('user_name')] = user_name
-    data[('issuer_name')] = issuer_name
-    data[('time')] = time.asctime(time.localtime(time.time()))
+    data = {'secret_key': selected_secret_key, ('user_name'): user_name, ('issuer_name'): issuer_name, ('time'): time.asctime(time.localtime(time.time()))}
 
     with open(f'{user_selected_file_name}.json', 'w', encoding='utf8') as outfile:
         json.dump(data, outfile, ensure_ascii=False, indent=4)
