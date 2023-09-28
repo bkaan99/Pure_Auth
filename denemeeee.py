@@ -27,12 +27,12 @@ def generate_qr_code(user_name, issuer_name, selected_secret_key):
 
 def verify_code(verification_code,readed_secret_key):
     otp = pyotp.TOTP(readed_secret_key)
-    if otp.verify(verification_code):
-        print(Fore.LIGHTGREEN_EX + "Doğrulama başarılı." + Fore.RESET)
-        close_program()
+    is_code_valid = otp.verify(verification_code)
+    if is_code_valid:
+        print( "\n" + "Doğrulama Kodu Geçerli")
     else:
-        print(Fore.LIGHTRED_EX + "Doğrulama başarısız." + Fore.RESET)
-        close_program()
+        print("Doğrulama Kodu Geçersiz")
+
 
 def change_secret_key():
     global selected_secret_key
@@ -72,13 +72,11 @@ def authenticate_user(valid_username, valid_password):
 
     if username == valid_username and password == valid_password:
         print("\n"+ Fore.LIGHTGREEN_EX  +"Kullanıcı doğrulandı." + Fore.RESET)
-        read_secret_key_from_json()
-        verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
-        verify_code(verification_code,readed_secret_key)
-
+        return True
     else:
-        print("Kullanıcı adı veya şifre yanlış")
+        print("Kullanıcı adı veya şifre yanlış. Program sonlandırılıyor.")
         close_program()
+
 def close_program():
     print("Program sonlandırılıyor.")
     sys.exit()
@@ -128,6 +126,7 @@ while is_running:
         if qr_code_choice == "yes":
             change_qr_settings()
             write_secret_key()
+            close_program()
 
         elif qr_code_choice == "no":
             defult_user_name = "DenemeUserName"
@@ -144,6 +143,20 @@ while is_running:
         elif qr_code_choice == "exit":
             close_program()
 
+        # verify_choice = ""
+        # while verify_choice not in ["yes", "no" , "exit"]:
+        #     verify_choice = input(Fore.LIGHTBLUE_EX + "Doğrulama yapmak ister misiniz? (yes/no): " + Fore.RESET).lower()
+        #     if verify_choice not in ["yes", "no" , "exit"]:
+        #         print("Geçersiz seçenek. 'yes' veya 'no' olarak cevap verin.")
+        #
+        # if verify_choice == "yes":
+        #     verification_code = input("Google Authenticator'dan gelen 6 haneli doğrulama kodunu girin: ")
+        #     verify_code(verification_code)
+        # elif verify_choice == "no":
+        #     print("Program sonlandırıldı.")
+        #     close_program()
+        # elif verify_choice == "exit":
+        #     close_program()
 
     elif user_choice == "2":
         is_authenticated = False
