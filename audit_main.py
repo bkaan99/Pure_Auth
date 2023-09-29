@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import time
+import cv2
 import pyotp
 import qrcode
 from colorama import Fore
@@ -102,6 +103,13 @@ def read_secret_key_from_json():
         print(Fore.LIGHTRED_EX + "\n" + "\n" +"Dosya bulunamadı." + Fore.RESET)
         close_program()
 
+def decode_qr_code(image):
+
+  qr_code = cv2.QRCodeDetector()
+  data, _, _ = qr_code.detectAndDecode(image)
+  return data
+
+
 is_running = True
 while is_running:
     print(
@@ -171,6 +179,23 @@ while is_running:
 
     elif user_choice == "exit":
         close_program()
+
+    elif user_choice == "3":
+        filename = input("Dosya adını girin: ")
+
+        qr_filename = f"{filename}.png"
+
+        if os.path.isfile(qr_filename) == True:
+            print("\n" + Fore.LIGHTGREEN_EX +  f"{qr_filename} " + Fore.RESET + "isimli dosya bulundu.")
+            image = cv2.imread(qr_filename)
+            data = decode_qr_code(image)
+            print("\n" + "URI Değeriniz: " + Fore.LIGHTYELLOW_EX + f"{data}" + Fore.RESET + "\n")
+            close_program()
+
+        else:
+            print(Fore.LIGHTRED_EX + "\n" + "\n" +"Dosya bulunamadı." + Fore.RESET)
+            close_program()
+
 
     else:
         invalid_attempt_count += 1  # Hatalı giriş sayacını artır
