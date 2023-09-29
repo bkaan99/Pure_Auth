@@ -138,6 +138,7 @@ while is_running:
             user_name = defult_user_name
             issuer_name = defult_issuer_name
             write_secret_key()
+            close_program()
 
         elif qr_code_choice == "exit":
             close_program()
