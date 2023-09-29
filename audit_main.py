@@ -55,15 +55,18 @@ def change_qr_settings():
 
 
 def write_secret_key():
-    data = {'secret_key': selected_secret_key,
-            ('user_name'): user_name,
-            ('issuer_name'): issuer_name,
-            ('time'): time.asctime(time.localtime(time.time()))}
+    try:
+        data = {'secret_key': selected_secret_key,
+                ('user_name'): user_name,
+                ('issuer_name'): issuer_name,
+                ('time'): time.asctime(time.localtime(time.time()))}
 
-    with open(f'{user_selected_file_name}.json', 'w', encoding='utf8') as outfile:
-        json.dump(data, outfile, ensure_ascii=False, indent=4)
+        with open(f'{user_selected_file_name}.json', 'w', encoding='utf8') as outfile:
+            json.dump(data, outfile, ensure_ascii=False, indent=4)
 
-    print("Gizli anahtarınız " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.json)" + Fore.RESET + " adında kaydedilecektir." + "\n")
+        print("Gizli anahtarınız " + Fore.LIGHTYELLOW_EX + f"({user_selected_file_name}.json)" + Fore.RESET + " adında kaydedilecektir." + "\n")
+    except:
+        print("Json dosyası oluşturulurken bir hata oluştu.")
 
 def authenticate_user(valid_username, valid_password):
     print("\n"+ "\n"+ "\n"+ Fore.LIGHTMAGENTA_EX + "Lütfen kimlik doğrulama bilgilerinizi girin:" + Fore.RESET)
