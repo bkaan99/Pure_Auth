@@ -188,7 +188,7 @@ while is_running:
 
         qr_filename = f"{filename}.png"
 
-        if os.path.isfile(qr_filename) == True:
+        if os.path.isfile(qr_filename) is True:
             print("\n" + Fore.LIGHTGREEN_EX +  f"{qr_filename} " + Fore.RESET + "isimli dosya bulundu.")
             image = cv2.imread(qr_filename)
             data = decode_qr_code(image)
